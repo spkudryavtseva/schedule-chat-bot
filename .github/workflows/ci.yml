@@ -1,19 +1,21 @@
-stages:
-  - build
-  - test
-  - deploy
+name: Deploy Project
 
-build-job:
-  stage: build
-  script:
-    - docker build -t my-backend-image .
+on:
+  push:
+    branches: 
+      - main
 
-test-job:
-  stage: test
-  script:
-    - docker run --rm my-backend-image pytest -s -v
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
 
-deploy-job:
-  stage: deploy
-  script:
-    - docker compose up -d
+    steps:
+    - name: Build, tag, and push image
+      id: build-image
+      run:
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker compose up -d
